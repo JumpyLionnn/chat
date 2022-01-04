@@ -18,11 +18,17 @@ export class ChatboxComponent implements OnInit {
   }
 
   public async onSendMessage(){
+    const content = this.messageInputContent.trim(); 
+    const username = this.nameInputContent.trim(); 
+    if(content === "" || username === "")
+      return;
+
     const today = new Date();
     const hours = today.getHours();
     const minutes = today.getMinutes();
     const time = (hours > 12 ? hours - 12 : hours) + ":" + (minutes < 10 ? "0" + minutes : minutes) + (hours > 11 ? " PM" : " AM");
-    this.messages.push(new Message(this.messageInputContent, this.nameInputContent, time));
+
+    this.messages.push(new Message(username, content, time));
     this.messageInputContent = "";
   }
 
