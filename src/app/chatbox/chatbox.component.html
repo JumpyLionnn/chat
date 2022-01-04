@@ -1,7 +1,7 @@
 <div class="container">
     <div class="row">
         <div class="col-xs-12">
-            <app-chatmessage *ngFor="let message of messages" [message]="message"></app-chatmessage>
+            <app-chatmessage *ngFor="let message of messages" [message]="message" (replyClick)="onReplyClick($event)"></app-chatmessage>
         </div>
     </div>
     <div class="row">
