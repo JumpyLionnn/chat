@@ -1,0 +1,14 @@
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <app-chatmessage *ngFor="let message of messages" [message]="message"></app-chatmessage>
+        </div>
+    </div>
+    <div class="row">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Type a message..." aria-label="Type a message..." aria-describedby="button-addon2" [disabled]="!allowSendingMessages" [(ngModel)]="messageInputContent" (keydown)="onInputKeyDown($event)">
+            <button class="btn btn-outline-secondary" type="button" id="button-addon2" [disabled]="!allowSendingMessages" (click)="onSendMessage()">Send</button>
+        </div>
+        <input type="text" class="form-control" placeholder="Write your name..." aria-label="Write your name..." aria-describedby="button-addon2" [(ngModel)]="nameInputContent">
+    </div>
+</div>

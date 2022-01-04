@@ -1,14 +1,20 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
+import { ChatboxComponent } from './chatbox/chatbox.component';
+import { ChatmessageComponent } from './chatmessage/chatmessage.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ChatboxComponent,
+    ChatmessageComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
