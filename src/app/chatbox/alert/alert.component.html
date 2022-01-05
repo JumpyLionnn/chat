@@ -1,0 +1,7 @@
+<div [ngClass]="['alert d-flex align-items-center alert-dismissible fade show', getAlertThemeClass()]" role="alert">
+    <i [ngClass]="getAlertIconClass()" width="32" height="32"></i>
+    <div>
+        <ng-content></ng-content>
+    </div>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" (click)="onClose();"></button>
+</div>

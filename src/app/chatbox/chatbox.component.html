@@ -1,7 +1,10 @@
 <div class="container">
-    <div class="row">
+    <div class="row position-relative">
         <div class="col-xs-12">
             <app-chatmessage *ngFor="let message of messages" [message]="message" (replyClick)="onReplyClick($event)"></app-chatmessage>
+        </div>
+        <div class="col-xs-12 position-absolute bottom-0 w-100 d-flex flex-column align-items-center">
+            <app-alert *ngFor="let alert of alerts; let i = index" [type]="alert.type" (close)="onAlertClose(i);">{{ alert.content }}</app-alert>
         </div>
     </div>
     <div class="row">

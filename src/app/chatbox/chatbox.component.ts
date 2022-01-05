@@ -11,6 +11,7 @@ export class ChatboxComponent implements OnInit {
   public messageInputContent: string = "";
   public nameInputContent: string = "";
   public messages: Message[] = [];
+  public alerts: {type: string, content: string}[] = [];
   constructor() { 
   }
 
@@ -20,8 +21,14 @@ export class ChatboxComponent implements OnInit {
   public async onSendMessage(){
     const content = this.messageInputContent.trim(); 
     const username = this.nameInputContent.trim(); 
-    if(content === "" || username === "")
+    if(content === ""){
+      this.addAlert("error", "You can not send an empty message.");
       return;
+    }
+    if(username === ""){
+      this.addAlert("error", "You dont have a name.");
+      return;
+    }
 
     const today = new Date();
     const hours = today.getHours();
@@ -32,6 +39,16 @@ export class ChatboxComponent implements OnInit {
     this.messageInputContent = "";
   }
 
+  public addAlert(type: string, content: string, time: number = 5000){
+    const alert = this.alerts[this.alerts.push({
+      type: type,
+      content: content
+    })];
+    setTimeout(()=>{
+      this.alerts.splice(this.alerts.indexOf(alert), 1);
+    }, time);
+  }
+
   public onInputKeyDown(event: KeyboardEvent){
     if(event.key === "Enter" && !event.repeat){
       this.onSendMessage();
@@ -40,6 +57,10 @@ export class ChatboxComponent implements OnInit {
 
   public onReplyClick(event){
     this.messageInputContent = `@${event.username} `;
+  }
+
+  public onAlertClose(index: number){
+    this.alerts.splice(index, 1);
   }
 
 }

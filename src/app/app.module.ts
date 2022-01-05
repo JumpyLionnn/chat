@@ -5,12 +5,14 @@ import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { ChatboxComponent } from './chatbox/chatbox.component';
 import { ChatmessageComponent } from './chatbox/chatmessage/chatmessage.component';
+import { AlertComponent } from './chatbox/alert/alert.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ChatboxComponent,
-    ChatmessageComponent
+    ChatmessageComponent,
+    AlertComponent
   ],
   imports: [
     BrowserModule,

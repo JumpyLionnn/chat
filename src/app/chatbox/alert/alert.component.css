@@ -1,0 +1,25 @@
+i {
+    font-size: 1.3em;
+    margin-right: .3em;
+}
+
+.btn-close {
+    top: auto!important;
+}
+
+.btn-close:focus {
+    box-shadow: none;
+}
+
+.alert {
+    animation: slideIn .25s linear 0s 1;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0%);
+    }
+}
