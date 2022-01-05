@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { ChatboxComponent } from './chatbox/chatbox.component';
-import { ChatmessageComponent } from './chatmessage/chatmessage.component';
+import { ChatmessageComponent } from './chatbox/chatmessage/chatmessage.component';
 
 @NgModule({
   declarations: [
