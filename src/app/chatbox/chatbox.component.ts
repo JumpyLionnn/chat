@@ -8,6 +8,9 @@ import { Message } from './chatmessage/message.model';
 })
 export class ChatboxComponent implements OnInit, AfterViewChecked {
   public allowSendingMessages: boolean = false;
+  public showScrollDownButton: boolean = false;
+  public shrinkScrollDownButton: boolean = false;
+  public messageSent: boolean = false;
   public messageContentInput: string = "";
   public nameInputContent: string = "";
   public messages: Message[] = [];
@@ -21,8 +24,11 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
   ngOnInit(): void {
   }
 
-  ngAfterViewChecked() {        
-    this.adjustScroll();        
+  ngAfterViewChecked() {   
+    if(this.messageSent){
+      this.adjustScroll();
+      this.messageSent = false;
+    }  
   } 
 
   public async onSendMessage(){
@@ -50,6 +56,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     //reseting the input
     this.messageContentInput = "";
     this.allowSendingMessages = false;
+    this.messageSent = true;
   }
 
   public onMessageContentInputChange(event: Event){
@@ -70,9 +77,33 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
   public adjustScroll(){
     const messagesContainer: HTMLDivElement = this.messagesContainerRef.nativeElement;
-    if(messagesContainer.scrollTop + messagesContainer.clientHeight > messagesContainer.scrollHeight - 250){
+    if(messagesContainer.scrollTop + messagesContainer.clientHeight >= messagesContainer.scrollHeight - 250){
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
+  }
+
+  public scrollDown(){
+    this.messagesContainerRef.nativeElement.scrollTo({
+      top: this.messagesContainerRef.nativeElement.scrollHeight, 
+      behavior: "smooth"
+    });
+  }
+
+  public checkScrollDownButton(){
+    const messagesContainer: HTMLDivElement = this.messagesContainerRef.nativeElement;
+    const shouldShow = messagesContainer.scrollTop + messagesContainer.clientHeight < messagesContainer.scrollHeight - 250;
+    if(shouldShow){
+      this.showScrollDownButton = true;
+      this.shrinkScrollDownButton = false;
+    }
+    else if(this.showScrollDownButton !== shouldShow){
+      this.shrinkScrollDownButton = true;
+      setTimeout(() => {
+        // calculating the result again to see if it got changed
+        this.showScrollDownButton = messagesContainer.scrollTop + messagesContainer.clientHeight < messagesContainer.scrollHeight - 250;
+        this.shrinkScrollDownButton = false;
+      }, 250);
+    } 
   }
 
   public onReplyClick(event){
