@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, AfterViewChecked, ViewChild } from '@angular/core';
 import { Message } from './chatmessage/message.model';
 
 @Component({
@@ -6,19 +6,27 @@ import { Message } from './chatmessage/message.model';
   templateUrl: './chatbox.component.html',
   styleUrls: ['./chatbox.component.css']
 })
-export class ChatboxComponent implements OnInit {
+export class ChatboxComponent implements OnInit, AfterViewChecked {
   public allowSendingMessages: boolean = false;
   public messageContentInput: string = "";
   public nameInputContent: string = "";
   public messages: Message[] = [];
   public alerts: {type: string, content: string}[] = [];
+
+  @ViewChild("messagesContainer", {static: true})
+  public messagesContainerRef: ElementRef;
   constructor() { 
   }
 
   ngOnInit(): void {
   }
 
+  ngAfterViewChecked() {        
+    this.adjustScroll();        
+  } 
+
   public async onSendMessage(){
+    // making sure the message data is valid
     const content = this.messageContentInput.trim(); 
     const username = this.nameInputContent.trim(); 
     if(content === ""){
@@ -30,12 +38,16 @@ export class ChatboxComponent implements OnInit {
       return;
     }
 
+    //calculating the date string
     const today = new Date();
     const hours = today.getHours();
     const minutes = today.getMinutes();
     const time = (hours > 12 ? hours - 12 : hours) + ":" + (minutes < 10 ? "0" + minutes : minutes) + (hours > 11 ? " PM" : " AM");
 
+    //adding the message to the list
     this.messages.push(new Message(username, content, time));
+
+    //reseting the input
     this.messageContentInput = "";
     this.allowSendingMessages = false;
   }
@@ -53,6 +65,13 @@ export class ChatboxComponent implements OnInit {
   public onInputKeyDown(event: KeyboardEvent){
     if(event.key === "Enter" && !event.repeat){
       this.onSendMessage();
+    }
+  }
+
+  public adjustScroll(){
+    const messagesContainer: HTMLDivElement = this.messagesContainerRef.nativeElement;
+    if(messagesContainer.scrollTop + messagesContainer.clientHeight > messagesContainer.scrollHeight - 250){
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
   }
 
