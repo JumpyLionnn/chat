@@ -1,3 +1,35 @@
 * {
     overflow: hidden;
 }
+
+
+/****
+scrollbar
+*************/
+
+
+/* Firefox */
+
+* {
+    scrollbar-color: #6c757d #f1f1f1;
+    scrollbar-width: thin;
+}
+
+
+/* chrome and edge */
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+ ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+ ::-webkit-scrollbar-thumb {
+    background: #6c757d;
+}
+
+ ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

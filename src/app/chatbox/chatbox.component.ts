@@ -1,20 +1,21 @@
-import { Component, ElementRef, OnInit, AfterViewChecked, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Message } from './chatmessage/message.model';
+import { ScrollableDirective } from '../directives/scrollable/scrollable.directive';
 
 @Component({
   selector: 'app-chatbox',
   templateUrl: './chatbox.component.html',
   styleUrls: ['./chatbox.component.css']
 })
-export class ChatboxComponent implements OnInit, AfterViewChecked {
+export class ChatboxComponent implements OnInit {
   public allowSendingMessages: boolean = false;
-  public showScrollDownButton: boolean = false;
-  public shrinkScrollDownButton: boolean = false;
-  public messageSent: boolean = false;
   public messageContentInput: string = "";
   public nameInputContent: string = "";
   public messages: Message[] = [];
   public alerts: {type: string, content: string}[] = [];
+
+  @ViewChild(ScrollableDirective)
+  public scrollableDirective: ScrollableDirective;
 
   @ViewChild("messagesContainer", {static: true})
   public messagesContainerRef: ElementRef;
@@ -23,13 +24,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
 
   ngOnInit(): void {
   }
-
-  ngAfterViewChecked() {   
-    if(this.messageSent){
-      this.adjustScroll();
-      this.messageSent = false;
-    }  
-  } 
 
   public async onSendMessage(){
     // making sure the message data is valid
@@ -56,7 +50,7 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     //reseting the input
     this.messageContentInput = "";
     this.allowSendingMessages = false;
-    this.messageSent = true;
+    this.scrollableDirective.adjustScroll();
   }
 
   public onMessageContentInputChange(event: Event){
@@ -73,37 +67,6 @@ export class ChatboxComponent implements OnInit, AfterViewChecked {
     if(event.key === "Enter" && !event.repeat){
       this.onSendMessage();
     }
-  }
-
-  public adjustScroll(){
-    const messagesContainer: HTMLDivElement = this.messagesContainerRef.nativeElement;
-    if(messagesContainer.scrollTop + messagesContainer.clientHeight >= messagesContainer.scrollHeight - 250){
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-  }
-
-  public scrollDown(){
-    this.messagesContainerRef.nativeElement.scrollTo({
-      top: this.messagesContainerRef.nativeElement.scrollHeight, 
-      behavior: "smooth"
-    });
-  }
-
-  public checkScrollDownButton(){
-    const messagesContainer: HTMLDivElement = this.messagesContainerRef.nativeElement;
-    const shouldShow = messagesContainer.scrollTop + messagesContainer.clientHeight < messagesContainer.scrollHeight - 250;
-    if(shouldShow){
-      this.showScrollDownButton = true;
-      this.shrinkScrollDownButton = false;
-    }
-    else if(this.showScrollDownButton !== shouldShow){
-      this.shrinkScrollDownButton = true;
-      setTimeout(() => {
-        // calculating the result again to see if it got changed
-        this.showScrollDownButton = messagesContainer.scrollTop + messagesContainer.clientHeight < messagesContainer.scrollHeight - 250;
-        this.shrinkScrollDownButton = false;
-      }, 250);
-    } 
   }
 
   public onReplyClick(event){
