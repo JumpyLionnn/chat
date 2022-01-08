@@ -2,6 +2,7 @@ import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@ang
 import { Message } from './chatmessage/message.model';
 import { ScrollableDirective } from '../directives/scrollable/scrollable.directive';
 import { ChatService } from '../chat.service';
+import { AudioService } from '../audio.service';
 
 @Component({
   selector: 'app-chatbox',
@@ -15,6 +16,8 @@ export class ChatboxComponent implements OnInit, OnDestroy {
   public messages: Message[] = [];
   public alerts: {type: string, content: string}[] = [];
 
+  private userMentionAudioId: number;
+
   @Input()
   public username: string;
 
@@ -23,13 +26,14 @@ export class ChatboxComponent implements OnInit, OnDestroy {
 
   @ViewChild("messagesContainer", {static: true})
   public messagesContainerRef: ElementRef;
-  constructor(private chatService: ChatService) { 
+  constructor(private chatService: ChatService, private audioSevice: AudioService) { 
   }
 
   ngOnInit(): void {
     this.chatService.message.subscribe((message)=>{
       this.addMessage(message.username, message.content);
     });
+    this.userMentionAudioId = this.audioSevice.load("assets/mention.mp3");
   }
 
   ngOnDestroy(): void {
@@ -102,6 +106,10 @@ export class ChatboxComponent implements OnInit, OnDestroy {
 
   public onAlertClose(index: number){
     this.alerts.splice(index, 1);
+  }
+
+  public onMention(){
+    this.audioSevice.play(this.userMentionAudioId);
   }
 
 }

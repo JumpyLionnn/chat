@@ -18,6 +18,9 @@ export class ChatmessageComponent implements OnInit {
   @Output() 
   public replyClick = new EventEmitter<{username: string}>();
 
+  @Output() 
+  public mention = new EventEmitter<null>();
+
   public userMentioned: boolean = false;
 
   // giving the template access to this enum
@@ -31,9 +34,8 @@ export class ChatmessageComponent implements OnInit {
     for (let i = 0; i < words.length; i++) {
       const word = words[i];
       if(word.startsWith("@") && word.length > 2){
-        console.log(this.username);
         if(this.username === word.substring(1, word.length)){
-          console.log("user mentioned");
+          this.mention.emit();
           this.userMentioned = true;
         }
         this.contentParts.push(new ContentPart(stack.join(" ") + " ", ContentPartType.Default));
