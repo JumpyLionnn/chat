@@ -1,10 +1,16 @@
-<div class="container-fluid border border-3 rounded-3 my-2 p-1">
+<div class="container-fluid border border-3 rounded-3 my-2 p-1" [ngClass]="{'userMentioned': userMentioned}">
     <div class="row">
         <div class="col">
             <h6 class="position-relative">
                 {{ message.username }}
             </h6>
-            <p class="mb-0">{{ message.content }}</p>
+            <p class="mb-0">
+                <ng-container *ngFor="let part of contentParts" [ngSwitch]="part.type">
+                    <app-mention *ngSwitchCase="ContentPartType.Mention">{{part.value}}</app-mention>
+                    <span *ngSwitchDefault>{{part.value}}</span>
+
+                </ng-container>
+            </p>
             <p class="mb-0 ms-2 text-muted">
                 <small>{{ message.time }}</small>
             </p>
