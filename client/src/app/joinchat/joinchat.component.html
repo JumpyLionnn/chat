@@ -1,0 +1,7 @@
+<div class="d-flex justify-content-center align-items-center h-100">
+    <form (ngSubmit)="onSubmit(form)" #form="ngForm" class="p-2 d-flex flex-column justify-content-center">
+        <input class="form-control" type="text" placeholder="Write your name..." ngModel name="username" required minLength="2" maxlength="30" #username="ngModel" autocomplete="off">
+        <span *ngIf="!username.valid && username.touched">Your name is too short</span>
+        <button type="button" class="btn btn-primary mt-2" type="submit">enter</button>
+    </form>
+</div>

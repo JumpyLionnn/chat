@@ -1,5 +1,6 @@
 <div class="h-100 d-flex flex-column">
     <h1>chat</h1>
     <hr>
-    <app-chatbox class="flex-grow-1"></app-chatbox>
+    <app-chatbox class="flex-grow-1" *ngIf="loggedin" [username]="username"></app-chatbox>
+    <app-joinchat class="flex-grow-1" *ngIf="!loggedin" (login)="onLogin($event)"></app-joinchat>
 </div>

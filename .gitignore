@@ -17,3 +17,5 @@
 !.vscode/extensions.json
 .history/*
 
+# dependencies
+node_modules/

@@ -6,5 +6,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'chat';
+  public loggedin: boolean = false;
+  public username: string;
+
+  public onLogin(data: {username: string}){
+    this.loggedin = true;
+    this.username = data.username;
+  }
 }

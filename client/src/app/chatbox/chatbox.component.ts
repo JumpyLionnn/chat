@@ -1,43 +1,64 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Message } from './chatmessage/message.model';
 import { ScrollableDirective } from '../directives/scrollable/scrollable.directive';
+import { ChatService } from '../chat.service';
 
 @Component({
   selector: 'app-chatbox',
   templateUrl: './chatbox.component.html',
-  styleUrls: ['./chatbox.component.css']
+  styleUrls: ['./chatbox.component.css'],
+  providers: [ChatService]
 })
-export class ChatboxComponent implements OnInit {
+export class ChatboxComponent implements OnInit, OnDestroy {
   public allowSendingMessages: boolean = false;
   public messageContentInput: string = "";
-  public nameInputContent: string = "";
   public messages: Message[] = [];
   public alerts: {type: string, content: string}[] = [];
+
+  @Input()
+  public username: string;
 
   @ViewChild(ScrollableDirective)
   public scrollableDirective: ScrollableDirective;
 
   @ViewChild("messagesContainer", {static: true})
   public messagesContainerRef: ElementRef;
-  constructor() { 
+  constructor(private chatService: ChatService) { 
   }
 
   ngOnInit(): void {
+    this.chatService.message.subscribe((message)=>{
+      this.addMessage(message.username, message.content);
+    });
   }
 
-  public async onSendMessage(){
+  ngOnDestroy(): void {
+    this.chatService.disconnect();
+  }
+
+
+  public onSendMessage(){
     // making sure the message data is valid
     const content = this.messageContentInput.trim(); 
-    const username = this.nameInputContent.trim(); 
     if(content === ""){
       this.addAlert("error", "You can not send an empty message.");
       return;
     }
-    if(username === ""){
-      this.addAlert("error", "You dont have a name.");
-      return;
-    }
 
+    //adding the message to the list
+    this.addMessage(this.username, content);
+    this.chatService.sendMessage({
+      username: this.username,
+      content: content
+    });
+
+    //reseting the input
+    this.messageContentInput = "";
+    this.allowSendingMessages = false;
+
+  }
+
+  public addMessage(username: string, content: string){
     //calculating the date string
     const today = new Date();
     const hours = today.getHours();
@@ -46,10 +67,6 @@ export class ChatboxComponent implements OnInit {
 
     //adding the message to the list
     this.messages.push(new Message(username, content, time));
-
-    //reseting the input
-    this.messageContentInput = "";
-    this.allowSendingMessages = false;
     this.scrollableDirective.adjustScroll();
   }
 

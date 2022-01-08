@@ -8,6 +8,7 @@ import { ChatmessageComponent } from './chatbox/chatmessage/chatmessage.componen
 import { AlertComponent } from './chatbox/alert/alert.component';
 import { ScrollableDirective } from './directives/scrollable/scrollable.directive';
 import { ScrollDownButtonComponent } from './directives/scrollable/scroll-down-button/scroll-down-button.component';
+import { JoinchatComponent } from './joinchat/joinchat.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { ScrollDownButtonComponent } from './directives/scrollable/scroll-down-b
     ChatmessageComponent,
     AlertComponent,
     ScrollableDirective,
-    ScrollDownButtonComponent
+    ScrollDownButtonComponent,
+    JoinchatComponent
   ],
   imports: [
     BrowserModule,
