@@ -13,4 +13,7 @@ export class AppComponent {
     this.loggedin = true;
     this.username = data.username;
   }
+  public onDisconnectClick(){
+    this.loggedin = false;
+  }
 }

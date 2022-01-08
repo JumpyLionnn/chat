@@ -1,6 +1,15 @@
 <div class="h-100 d-flex flex-column">
-    <h1>chat</h1>
-    <hr>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Chat</a>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                </ul>
+                <button class="btn btn-outline-danger" type="submit" *ngIf="loggedin" (click)="onDisconnectClick()">Disconnect</button>
+            </div>
+        </div>
+    </nav>
     <app-chatbox class="flex-grow-1" *ngIf="loggedin" [username]="username"></app-chatbox>
     <app-joinchat class="flex-grow-1" *ngIf="!loggedin" (login)="onLogin($event)"></app-joinchat>
 </div>
