@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  chatHost: "https://basic-simple-chat.herokuapp.com/"
 };
