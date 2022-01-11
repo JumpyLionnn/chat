@@ -1,6 +1,5 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, ViewChild, ElementRef } from '@angular/core';
 import { Message } from './message.model';
-import { ContentPart, ContentPartType } from './messageContentParts.model';
 
 @Component({
   selector: 'app-chatmessage',
@@ -13,7 +12,9 @@ export class ChatmessageComponent implements OnInit {
   @Input()
   public username: string;
 
-  public contentParts: ContentPart[] = [];
+  @ViewChild("messageContent", {static: true})
+  private messapeContentPRef: ElementRef<HTMLParagraphElement>;
+
 
   @Output() 
   public replyClick = new EventEmitter<{username: string}>();
@@ -23,30 +24,23 @@ export class ChatmessageComponent implements OnInit {
 
   public userMentioned: boolean = false;
 
-  // giving the template access to this enum
-  public ContentPartType = ContentPartType;
   
   constructor() { }
 
   ngOnInit(): void {
-    const words = this.message.content.split(" ");
-    let stack: string[] = [];
-    for (let i = 0; i < words.length; i++) {
-      const word = words[i];
-      if(word.startsWith("@") && word.length > 2){
-        if(this.username === word.substring(1, word.length)){
-          this.mention.emit();
-          this.userMentioned = true;
-        }
-        this.contentParts.push(new ContentPart(stack.join(" ") + " ", ContentPartType.Default));
-        stack = [""];
-        this.contentParts.push(new ContentPart(word, ContentPartType.Mention));
+    const content = this.removeHtml(this.message.content);
+    const bold = this.formatText(content, this.boldRegexp, "b");
+    const strike = this.formatText(bold, this.strikeRegexp, "s");
+    const italic = this.formatText(strike, this.italicRegexp, "i");
+
+    const mention =  italic.replace(this.mentionRegexp, value => {
+      if(this.username === value.substring(1, value.length)){
+        this.userMentioned = true;
+        this.mention.emit();
       }
-      else{
-        stack.push(word);
-      }
-    }
-    this.contentParts.push(new ContentPart(stack.join(" "), ContentPartType.Default));
+      return `<span class="mention btn btn-outline-primary p-0 border border-0">${value}</span>`
+  });
+  this.messapeContentPRef.nativeElement.innerHTML = mention;
   }
 
   public onReplyClick(){
@@ -54,5 +48,21 @@ export class ChatmessageComponent implements OnInit {
       username: this.message.username
     });
   }
-
+  
+  private formatText(text: string, regexp: RegExp, tag:string){
+    return text.replace(regexp, value => {
+        return `<${tag}>${value.substring(1, value.length - 1)}</${tag}>`;
+    });
+  }
+  
+  private removeHtml(text: string): string{
+    return text.replace(/>/g, "&gt;").replace(/</g, "&lt;");
+  }
+  
+  private readonly boldRegexp = /(?<=\s|^)\*(?!(\s))[^\*]+(?<!(\s))\*(?=\s|$)/g;
+  private readonly strikeRegexp = /(?<=\s|^)\~(?!(\s))[^\~]+(?<!(\s))\~(?=\s|$)/g;
+  private readonly italicRegexp = /(?<=\s|^)\_(?!(\s))[^\_]+(?<!(\s))\_(?=\s|$)/g;
+  private readonly mentionRegexp = /(?<=\s|^)@[^\s@]+(?=\s|$)/g;
 }
+
+

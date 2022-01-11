@@ -6,3 +6,10 @@ p{
     white-space: break-spaces;
     overflow-wrap: break-word;
 }
+
+span.mention {
+    display: inline;
+    vertical-align: top;
+    -webkit-user-select: auto;
+    user-select: auto;
+}
