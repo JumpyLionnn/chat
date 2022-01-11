@@ -38,12 +38,16 @@ export class ChatboxComponent implements OnInit, OnDestroy {
       this.addMessage(message.username, message.content);
     });
     this.userMentionAudioId = this.audioSevice.load("assets/mention.mp3");
+    this.textareaRef.nativeElement.focus();
   }
 
   ngOnDestroy(): void {
     this.chatService.disconnect();
   }
 
+  public onBlur(){
+    this.textareaRef.nativeElement.focus();
+  }
 
   public onSendMessage(){
     // making sure the message data is valid
