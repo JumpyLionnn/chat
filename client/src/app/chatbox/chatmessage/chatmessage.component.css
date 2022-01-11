@@ -1,3 +1,8 @@
 .userMentioned {
     background-color: #ffe69c;
 }
+
+p{
+    white-space: break-spaces;
+    overflow-wrap: break-word;
+}
