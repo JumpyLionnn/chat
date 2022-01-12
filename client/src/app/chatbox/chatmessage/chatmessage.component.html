@@ -4,7 +4,17 @@
             <h6 class="position-relative">
                 {{ message.username }}
             </h6>
-            <p class="mb-0" #messageContent>
+            <p class="mb-0">
+                <ng-template ngFor let-part [ngForOf]="messageParts">
+                    <span [ngClass]="{
+                        bold:part.isBold(),
+                        strike:part.isStrike(),
+                        italic:part.isItalic()
+                    }">
+                        <span *ngIf="!part.mention">{{part.value}}</span>
+                        <app-mention *ngIf="part.mention">{{part.value}}</app-mention>
+                </span>
+                </ng-template>
             </p>
             <p class="mb-0 ms-2 text-muted">
                 <small>{{ message.time }}</small>

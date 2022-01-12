@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, EventEmitter, Output, ViewChild, ElementRef } from '@angular/core';
 import { Message } from './message.model';
+import { MessageContentPart, MessageContentPartType } from './messageContentPart';
 
 @Component({
   selector: 'app-chatmessage',
@@ -12,35 +13,104 @@ export class ChatmessageComponent implements OnInit {
   @Input()
   public username: string;
 
-  @ViewChild("messageContent", {static: true})
-  private messapeContentPRef: ElementRef<HTMLParagraphElement>;
-
 
   @Output() 
   public replyClick = new EventEmitter<{username: string}>();
 
-  @Output() 
-  public mention = new EventEmitter<null>();
+  @Output("mention") 
+  public mentionEvent = new EventEmitter<null>();
 
   public userMentioned: boolean = false;
 
+  public messageParts: MessageContentPart[] = [];
   
   constructor() { }
 
   ngOnInit(): void {
-    const content = this.removeHtml(this.message.content);
-    const bold = this.formatText(content, this.boldRegexp, "b");
-    const strike = this.formatText(bold, this.strikeRegexp, "s");
-    const italic = this.formatText(strike, this.italicRegexp, "i");
+    this.parse(this.message.content);
+  }
 
-    const mention =  italic.replace(this.mentionRegexp, value => {
-      if(this.username === value.substring(1, value.length)){
-        this.userMentioned = true;
-        this.mention.emit();
+  private parse(value: string, types: MessageContentPartType[] = []) {
+    let stack = "";
+    let currentFormat = "";
+    let mention = false;
+    for (let i = 0; i < value.length; i++) {
+      const char = value[i];
+      const before = i > 0 ? value[i - 1] : "";
+      const next = i < value.length - 1 ? value[i + 1] : "";
+      if(mention && this.isWhiteSpaceOrNothing(next)){
+        const mentionValue = stack + char;
+        this.addPart(mentionValue, types, true);
+        this.mention(mentionValue.substring(1));
+        mention = false;
+        stack = "";
+        continue;
       }
-      return `<span class="mention btn btn-outline-primary p-0 border border-0">${value}</span>`
-  });
-  this.messapeContentPRef.nativeElement.innerHTML = mention;
+      switch (char) {
+        case currentFormat:
+          if(!this.isWhiteSpaceOrNothing(before) && this.isWhiteSpaceOrNothing(next)){
+            this.parse(stack.substring(1), [...types, this.getFormatType(char)]);
+            stack = "";
+            currentFormat = "";
+            continue;
+          }
+          break;
+        case "*":
+        case "~":
+        case "_":
+          if(currentFormat === "" && this.isWhiteSpaceOrNothing(before) && !this.isWhiteSpaceOrNothing(next)){
+            this.addPart(stack, types);
+            stack = "";
+            currentFormat = char;
+          }
+          break;
+        case "@":
+          if(currentFormat === "" && this.isWhiteSpaceOrNothing(before) && !this.isWhiteSpaceOrNothing(next)){
+            this.addPart(stack, types);
+            stack = "";
+            mention = true;
+          }
+          break;
+      }
+      stack += char;
+    }
+
+    if(currentFormat !== ""){
+      this.addPart(stack[0], types);
+      this.parse(stack.substring(1), types);
+    }
+    else{
+      this.addPart(stack, types);
+    }
+  }
+
+  private isWhiteSpaceOrNothing(char: string){
+    return /\s/.test(char) || char === "";
+  }
+
+  private addPart(value: string, types: MessageContentPartType[], mention: boolean = false){
+    if(value !== "")
+      this.messageParts.push(new MessageContentPart(value, types, mention));
+  }
+
+  private getFormatType(char: string){
+    switch (char) {
+      case "*":
+        return MessageContentPartType.Bold;
+      case "~":
+        return MessageContentPartType.Strike;
+      case "_":
+        return MessageContentPartType.Italic;
+      default:
+        throw `there is not a format type with "${char}"`;
+    }
+  }
+
+  private mention(username: string){
+    if(!this.userMentioned && username === this.username){
+      this.mentionEvent.emit();
+      this.userMentioned = true;
+    }
   }
 
   public onReplyClick(){
@@ -48,21 +118,6 @@ export class ChatmessageComponent implements OnInit {
       username: this.message.username
     });
   }
-  
-  private formatText(text: string, regexp: RegExp, tag:string){
-    return text.replace(regexp, value => {
-        return `<${tag}>${value.substring(1, value.length - 1)}</${tag}>`;
-    });
-  }
-  
-  private removeHtml(text: string): string{
-    return text.replace(/>/g, "&gt;").replace(/</g, "&lt;");
-  }
-  
-  private readonly boldRegexp = /(?<=\s|^)\*(?!(\s))[^\*]+(?<!(\s))\*(?=\s|$)/g;
-  private readonly strikeRegexp = /(?<=\s|^)\~(?!(\s))[^\~]+(?<!(\s))\~(?=\s|$)/g;
-  private readonly italicRegexp = /(?<=\s|^)\_(?!(\s))[^\_]+(?<!(\s))\_(?=\s|$)/g;
-  private readonly mentionRegexp = /(?<=\s|^)@[^\s@]+(?=\s|$)/g;
 }
 
 

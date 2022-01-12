@@ -7,9 +7,15 @@ p{
     overflow-wrap: break-word;
 }
 
-span.mention {
-    display: inline;
-    vertical-align: top;
-    -webkit-user-select: auto;
-    user-select: auto;
+
+span.bold{
+    font-weight: bold;
+}
+
+span.strike{
+    text-decoration: line-through;
+}
+
+span.italic{
+    font-style: italic;
 }

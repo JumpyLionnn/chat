@@ -1,0 +1,6 @@
+span.btn {
+    display: inline;
+    vertical-align: top;
+    -webkit-user-select: auto;
+    user-select: auto;
+}
