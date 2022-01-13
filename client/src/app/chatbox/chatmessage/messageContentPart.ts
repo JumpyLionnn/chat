@@ -1,13 +1,22 @@
 export class MessageContentPart{
-    constructor(public value: string, public types: MessageContentPartType[], public readonly mention: boolean = false){}
+    constructor(public value: string,
+        public kinds: MessageContentPartFormatKind[],
+        public readonly type: MessageContentPartType = MessageContentPartType.Regular)
+        {}
 
-    public isBold() { return this.types.includes(MessageContentPartType.Bold); }
-    public isStrike() { return this.types.includes(MessageContentPartType.Strike); }
-    public isItalic() { return this.types.includes(MessageContentPartType.Italic); }
+    public isBold() { return this.kinds.includes(MessageContentPartFormatKind.Bold); }
+    public isStrike() { return this.kinds.includes(MessageContentPartFormatKind.Strike); }
+    public isItalic() { return this.kinds.includes(MessageContentPartFormatKind.Italic); }
 }
 
-export enum MessageContentPartType{
+export enum MessageContentPartFormatKind{
     Bold,
     Strike,
     Italic
+}
+
+export enum MessageContentPartType{
+    Regular,
+    Mention,
+    Link
 }

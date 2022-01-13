@@ -10,10 +10,11 @@
                         bold:part.isBold(),
                         strike:part.isStrike(),
                         italic:part.isItalic()
-                    }">
-                        <span *ngIf="!part.mention">{{part.value}}</span>
-                        <app-mention *ngIf="part.mention">{{part.value}}</app-mention>
-                </span>
+                    }" [ngSwitch]="part.type">
+                        <app-mention *ngSwitchCase="MessageContentPartType.Mention">{{part.value}}</app-mention>
+                        <a  class="e2e-trusted-url" *ngSwitchCase="MessageContentPartType.Link" target="_blank" [href]="part.value">{{part.value}}</a>
+                        <span *ngSwitchDefault>{{part.value}}</span>
+                    </span>
                 </ng-template>
             </p>
             <p class="mb-0 ms-2 text-muted">
