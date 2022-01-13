@@ -10,6 +10,7 @@ import { ScrollableDirective } from './directives/scrollable/scrollable.directiv
 import { ScrollDownButtonComponent } from './directives/scrollable/scroll-down-button/scroll-down-button.component';
 import { JoinchatComponent } from './joinchat/joinchat.component';
 import { MentionComponent } from './chatbox/chatmessage/mention/mention.component';
+import { TextareaComponent } from './chatbox/textarea/textarea.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { MentionComponent } from './chatbox/chatmessage/mention/mention.componen
     ScrollableDirective,
     ScrollDownButtonComponent,
     JoinchatComponent,
-    MentionComponent
+    MentionComponent,
+    TextareaComponent
   ],
   imports: [
     BrowserModule,

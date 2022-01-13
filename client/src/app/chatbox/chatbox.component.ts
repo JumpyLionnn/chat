@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Message } from './chatmessage/message.model';
 import { ScrollableDirective } from '../directives/scrollable/scrollable.directive';
 import { ChatService } from '../chat.service';
@@ -17,19 +17,15 @@ export class ChatboxComponent implements OnInit, OnDestroy {
   public alerts: {type: string, content: string}[] = [];
 
   private userMentionAudioId: number;
-  private readonly maxVisibleRowAmount = 6;
-  private readonly isMobile: boolean = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
   @Input()
   public username: string;
 
-  @ViewChild(ScrollableDirective)
-  public scrollableDirective: ScrollableDirective;
-  @ViewChild("textarea", {static: true})
-  public textareaRef: ElementRef<HTMLTextAreaElement>;
-
   @ViewChild("messagesContainer", {static: true})
   public messagesContainerRef: ElementRef<HTMLDivElement>;
+  @ViewChild(ScrollableDirective)
+  public scrollableDirective: ScrollableDirective;
+
   constructor(private chatService: ChatService, private audioSevice: AudioService) { 
   }
 
@@ -38,15 +34,10 @@ export class ChatboxComponent implements OnInit, OnDestroy {
       this.addMessage(message.username, message.content);
     });
     this.userMentionAudioId = this.audioSevice.load("assets/mention.mp3");
-    this.textareaRef.nativeElement.focus();
   }
 
   ngOnDestroy(): void {
     this.chatService.disconnect();
-  }
-
-  public onBlur(){
-    this.textareaRef.nativeElement.focus();
   }
 
   public onSendMessage(){
@@ -67,7 +58,7 @@ export class ChatboxComponent implements OnInit, OnDestroy {
     //reseting the input
     this.messageContentInput = "";
     this.allowSendingMessages = false;
-    this.textareaRef.nativeElement.rows = 1;
+    //this.setRows(1);
   }
 
   public addMessage(username: string, content: string){
@@ -82,61 +73,13 @@ export class ChatboxComponent implements OnInit, OnDestroy {
     this.scrollableDirective.adjustScroll();
   }
 
-  public onMessageContentInputChange(event: InputEvent){
-    const textarea = this.textareaRef.nativeElement;
-    this.messageContentInput = textarea.value;
-    if(this.messageContentInput.trim() === ""){
-      this.allowSendingMessages = false;
-    }
-    else{
-      this.allowSendingMessages = true;
-    }
-
-    const lines = this.calculateLines(textarea);
-    textarea.rows = lines > this.maxVisibleRowAmount ? this.maxVisibleRowAmount : lines;
+  public onSubmit(){
+    this.onSendMessage();
   }
 
-  public onInputKeyDown(event: KeyboardEvent){
-    if(event.key === "Enter"){
-      const textarea = this.textareaRef.nativeElement;
-      if((event.shiftKey || this.isMobile)){
-        if(textarea.value.split("\n").length < 10){
-          const selection = textarea.selectionStart;
-          const value = textarea.value;
-          textarea.value = value.substring(0, selection) + "\n" + value.substring(selection, value.length);
-          if(this.calculateLines(textarea) < this.maxVisibleRowAmount){
-            textarea.rows++;
-          }
-          textarea.setSelectionRange(selection + 1, selection + 1);
-          }
-      }
-      else if(!event.repeat){
-        this.onSendMessage();
-      }
-      event.preventDefault();
-    }
+  public onInputChange(event){
+    this.messageContentInput = event.value;
   }
-
-  @HostListener("window:resize", ["$event"])
-  public onResize(event: Event){
-    const textarea = this.textareaRef.nativeElement;
-    const lines = this.calculateLines(textarea);
-    textarea.rows = lines > this.maxVisibleRowAmount ? this.maxVisibleRowAmount : lines;
-
-  }
-
-  private calculateLines(element: HTMLTextAreaElement): number{
-    const computedStyle = window.getComputedStyle(element);
-    const fontSize = parseFloat(computedStyle.getPropertyValue('font-size'));
-    const padding = parseFloat(computedStyle.getPropertyValue('padding-top')) + 
-      parseFloat(computedStyle.getPropertyValue('padding-bottom'));
-    const rows = element.rows;
-    element.rows = 1;
-    const result = (element.scrollHeight - padding) / fontSize / 3 * 2;
-    element.rows = rows;
-    return result;
-  }
-  
 
   public onReplyClick(event){
     this.messageContentInput = `@${event.username} `;

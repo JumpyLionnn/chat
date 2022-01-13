@@ -1,0 +1,15 @@
+div[contenteditable]{
+    overflow-y: auto;
+}
+
+div[contenteditable]:empty:before {
+    content: attr(data-placeholder);
+    color: gray;
+}
+
+:host{
+    position: relative;
+    flex: 1 1 auto;
+    width: 1%;
+    min-width: 0;
+}

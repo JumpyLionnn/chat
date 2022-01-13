@@ -11,8 +11,7 @@
     </div>
     <div class="row mb-3">
         <div class="input-group mb-3">
-            <textarea rows="1" class="form-control overflow-y-auto" placeholder="Type a message..." aria-label="Type a message..." aria-describedby="button-addon2" [value]="messageContentInput" (keydown)="onInputKeyDown($event)" (input)="onMessageContentInputChange($event)" (blur)="onBlur()" #textarea>
-            </textarea>
+            <app-textarea (change)="onInputChange($event)" (submit)="onSubmit()" placeholder="Type a message..." autofocus="true"></app-textarea>
             <button class="btn btn-outline-secondary px-1 py-0" type="button" id="button-addon2" [disabled]="!allowSendingMessages" (click)="onSendMessage()">
                 <i class="bi-arrow-right-circle-fill fs-4"></i>
             </button>

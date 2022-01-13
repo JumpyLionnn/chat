@@ -1,5 +1,4 @@
-button:focus,
-textarea:focus {
+button:focus {
     box-shadow: none;
 }
 
@@ -9,8 +8,4 @@ textarea:focus {
 
 .flex-basis-0 {
     flex-basis: 0;
-}
-
-textarea{
-    resize: none;
 }
