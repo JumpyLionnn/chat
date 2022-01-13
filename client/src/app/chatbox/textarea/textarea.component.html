@@ -1,3 +1,3 @@
-<div contenteditable [attr.data-placeholder]="placeholder"  class="form-control" (input)="onInput()" (keydown)="onKeyDown($event)" id="textarea" #textarea>
+<div contenteditable [attr.data-placeholder]="placeholder"  class="form-control" (paste)="onPaste($event)" (input)="onInput()" (keydown)="onKeyDown($event)" id="textarea" #textarea>
 
 </div>

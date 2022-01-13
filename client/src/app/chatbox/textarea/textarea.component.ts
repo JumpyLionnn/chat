@@ -30,6 +30,12 @@ export class TextareaComponent implements OnInit {
     this.setMaxHeight();
   }
 
+  public onPaste(event){
+    event.preventDefault()
+    var text = event.clipboardData.getData("text/plain");
+    document.execCommand("insertText", false, text);
+  }
+
   public onInput(){
     const textarea = this.textareaDivRef.nativeElement;
     this.changeEvent.emit({value: textarea.innerText});
