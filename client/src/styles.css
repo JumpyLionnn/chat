@@ -2,6 +2,10 @@
     overflow: hidden;
 }
 
+.focus-none:focus{
+    box-shadow: none;
+}
+
 
 /****
 scrollbar

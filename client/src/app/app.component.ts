@@ -9,7 +9,14 @@ export class AppComponent {
   public loggedin: boolean = false;
   public username: string;
 
-  public onLogin(data: {username: string}){
+  constructor(){
+    if(JSON.parse(localStorage.getItem("save"))){
+      this.loggedin = true;
+      this.username = localStorage.getItem("username");
+    }
+  }
+
+  public onLogin(data: {username: string, save: boolean}){
     this.loggedin = true;
     this.username = data.username;
   }

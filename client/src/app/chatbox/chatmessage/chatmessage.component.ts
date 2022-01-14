@@ -32,7 +32,6 @@ export class ChatmessageComponent implements OnInit {
 
   ngOnInit(): void {
     this.parse(this.message.content);
-    console.log(this.messageParts);
   }
 
   private parse(value: string, kinds: MessageContentPartFormatKind[] = []) {

@@ -12,7 +12,7 @@
     <div class="row mb-3">
         <div class="input-group mb-3">
             <app-textarea (change)="onInputChange($event)" (submit)="onSubmit()" placeholder="Type a message..." autofocus="true"></app-textarea>
-            <button class="btn btn-outline-secondary px-1 py-0" type="button" id="button-addon2" [disabled]="!allowSendingMessages" (click)="onSendMessage()">
+            <button class="btn btn-outline-secondary px-1 py-0 focus-none" type="button" id="button-addon2" [disabled]="!allowSendingMessages" (click)="onSendMessage()">
                 <i class="bi-arrow-right-circle-fill fs-4"></i>
             </button>
         </div>
