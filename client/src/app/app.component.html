@@ -1,13 +1,18 @@
 <div class="h-100 d-flex flex-column">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Chat</a>
+            <a class="navbar-brand"  routerLink="/">Chat</a>
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" routerLink="/" *ngIf="chatService.connected">general</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/users" *ngIf="chatService.connected">users</a>
+                </li>
             </ul>
-            <button class="btn btn-outline-danger" type="submit" *ngIf="loggedin" (click)="onDisconnectClick()">Disconnect</button>
+
+            <button class="btn btn-outline-danger" typ="submit" *ngIf="chatService.connected" (click)="onDisconnectClick()">Disconnect</button>
         </div>
     </nav>
-    <app-chatbox class="flex-grow-1" *ngIf="loggedin" [username]="username"></app-chatbox>
-    <app-joinchat class="flex-grow-1" *ngIf="!loggedin" (login)="onLogin($event)"></app-joinchat>
+    <router-outlet></router-outlet>
 </div>

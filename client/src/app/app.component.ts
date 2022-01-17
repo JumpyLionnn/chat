@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { ChatService } from './chat.service';
 
 @Component({
   selector: 'app-root',
@@ -6,21 +8,19 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  public loggedin: boolean = false;
   public username: string;
 
-  constructor(){
+  constructor(public chatService: ChatService, private router: Router){
     if(JSON.parse(localStorage.getItem("save"))){
-      this.loggedin = true;
       this.username = localStorage.getItem("username");
+      this.chatService.connect(this.username);
+    this.router.navigate(["/"]);
     }
   }
 
-  public onLogin(data: {username: string, save: boolean}){
-    this.loggedin = true;
-    this.username = data.username;
-  }
+
   public onDisconnectClick(){
-    this.loggedin = false;
+    this.chatService.disconnect();
+    this.router.navigate(["/login"]);
   }
 }

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
+import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { ChatboxComponent } from './chatbox/chatbox.component';
@@ -11,6 +12,15 @@ import { ScrollDownButtonComponent } from './directives/scrollable/scroll-down-b
 import { JoinchatComponent } from './joinchat/joinchat.component';
 import { MentionComponent } from './chatbox/chatmessage/mention/mention.component';
 import { TextareaComponent } from './chatbox/textarea/textarea.component';
+import { ChatService } from './chat.service';
+import { OnlineusersComponent } from './onlineusers/onlineusers.component';
+import { AuthGuardService } from './authGuard.service';
+
+const appRoutes: Routes = [
+  {path: "", canActivate: [AuthGuardService], component: ChatboxComponent},
+  {path: "users", canActivate: [AuthGuardService], component: OnlineusersComponent},
+  {path: "login", component: JoinchatComponent},
+];
 
 @NgModule({
   declarations: [
@@ -22,13 +32,18 @@ import { TextareaComponent } from './chatbox/textarea/textarea.component';
     ScrollDownButtonComponent,
     JoinchatComponent,
     MentionComponent,
-    TextareaComponent
+    TextareaComponent,
+    OnlineusersComponent
   ],
   imports: [
     BrowserModule,
-    FormsModule
+    FormsModule,
+    RouterModule.forRoot(appRoutes)
   ],
-  providers: [],
+  providers: [
+    ChatService,
+    AuthGuardService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

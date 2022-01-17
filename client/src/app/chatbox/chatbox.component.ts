@@ -7,26 +7,22 @@ import { AudioService } from '../audio.service';
 @Component({
   selector: 'app-chatbox',
   templateUrl: './chatbox.component.html',
-  styleUrls: ['./chatbox.component.css'],
-  providers: [ChatService]
+  styleUrls: ['./chatbox.component.css']
 })
-export class ChatboxComponent implements OnInit, OnDestroy {
+export class ChatboxComponent implements OnInit {
   public allowSendingMessages: boolean = false;
   public messageContentInput: string = "";
-  public messages: Message[] = [];
+  
   public alerts: {type: string, content: string}[] = [];
 
   private userMentionAudioId: number;
-
-  @Input()
-  public username: string;
 
   @ViewChild("messagesContainer", {static: true})
   public messagesContainerRef: ElementRef<HTMLDivElement>;
   @ViewChild(ScrollableDirective)
   public scrollableDirective: ScrollableDirective;
 
-  constructor(private chatService: ChatService, private audioSevice: AudioService) { 
+  constructor(public chatService: ChatService, private audioSevice: AudioService) { 
   }
 
   ngOnInit(): void {
@@ -34,10 +30,6 @@ export class ChatboxComponent implements OnInit, OnDestroy {
       this.addMessage(message.username, message.content);
     });
     this.userMentionAudioId = this.audioSevice.load("assets/mention.mp3");
-  }
-
-  ngOnDestroy(): void {
-    this.chatService.disconnect();
   }
 
   public onSendMessage(){
@@ -49,9 +41,8 @@ export class ChatboxComponent implements OnInit, OnDestroy {
     }
 
     //adding the message to the list
-    this.addMessage(this.username, content);
+    this.addMessage(this.chatService.username, content);
     this.chatService.sendMessage({
-      username: this.username,
       content: content
     });
 
@@ -69,7 +60,7 @@ export class ChatboxComponent implements OnInit, OnDestroy {
     const time = (hours > 12 ? hours - 12 : hours) + ":" + (minutes < 10 ? "0" + minutes : minutes) + (hours > 11 ? " PM" : " AM");
 
     //adding the message to the list
-    this.messages.push(new Message(username, content, time));
+    this.chatService.messages.push(new Message(username, content, time));
     this.scrollableDirective.adjustScroll();
   }
 

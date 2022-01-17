@@ -6,3 +6,6 @@
 .flex-basis-0 {
     flex-basis: 0;
 }
+:host{
+    flex-grow: 1;
+}

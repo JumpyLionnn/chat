@@ -1,4 +1,6 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ChatService } from '../chat.service';
 
 @Component({
   selector: 'app-joinchat',
@@ -6,18 +8,17 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./joinchat.component.css']
 })
 export class JoinchatComponent implements OnInit {
-  @Output()
-  public login: EventEmitter<{username: string, save: boolean}> = new EventEmitter();
-
+  
   public save: boolean = JSON.parse(localStorage.getItem("save")) || false;
-  constructor() { }
+  constructor(private chatService: ChatService, private router: Router) { 
+    localStorage.setItem("save", "false");
+  }
 
   ngOnInit(): void {
   }
 
   public onSubmit(data){
     if(data.valid){
-      this.login.emit(data.value);
       if(data.value.save){
         localStorage.setItem("save", "true");
         localStorage.setItem("username", data.value.username);
@@ -26,7 +27,8 @@ export class JoinchatComponent implements OnInit {
       else{
         localStorage.setItem("save", "false");
       }
+      this.chatService.connect(data.value.username);
+      this.router.navigate(["/"]);
     }
   }
-
 }
